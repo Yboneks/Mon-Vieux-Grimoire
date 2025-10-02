@@ -21,9 +21,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 mongoose
-  .connect(
-    "mongodb+srv://Yboneks:161101aB@cluster0.qgdlhmx.mongodb.net/grimoire?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
