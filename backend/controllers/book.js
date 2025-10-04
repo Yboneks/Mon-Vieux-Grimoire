@@ -43,11 +43,25 @@ exports.modifyBook = (req, res, next) => {
     : { ...req.body };
 
   delete bookObject._userId;
+
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       if (book.userId != req.auth.userId) {
         res.status(401).json({ message: "Not authorized" });
       } else {
+        // Si une nouvelle image est uploadée alors on doit supprimer l'ancienne
+        if (req.file) {
+          const oldFilename = book.imageUrl.split("/images/")[1];
+          fs.unlink(`images/${oldFilename}`, (err) => {
+            if (err) {
+              console.log("Erreur suppression ancienne image:", err);
+            } else {
+              console.log(`🗑️ Ancienne image supprimée: ${oldFilename}`);
+            }
+          });
+        }
+
+        // Mise à jour du livre
         Book.updateOne(
           { _id: req.params.id },
           { ...bookObject, _id: req.params.id }
@@ -71,6 +85,7 @@ exports.deleteBook = (req, res, next) => {
         fs.unlink(`images/${filename}`, () => {
           Book.deleteOne({ _id: req.params.id })
             .then(() => {
+              console.log(`🗑️ Livre et image supprimés: ${filename}`);
               res.status(200).json({ message: "Objet supprimé !" });
             })
             .catch((error) => res.status(401).json({ error }));
@@ -112,7 +127,6 @@ exports.rateBook = (req, res, next) => {
           .json({ message: "Vous avez déjà noté ce livre" });
       }
 
-      // ⭐ Ce code doit être EN DEHORS du if (alreadyRated)
       book.ratings.push({ userId: userId, grade: grade });
 
       const totalRatings = book.ratings.length;
@@ -132,8 +146,8 @@ exports.rateBook = (req, res, next) => {
 
 exports.getBestRating = (req, res, next) => {
   Book.find()
-    .sort({ averageRating: -1 }) // Tri par note décroissante
-    .limit(3) // Les 3 meilleurs
+    .sort({ averageRating: -1 })
+    .limit(3)
     .then((books) => res.status(200).json(books))
     .catch((error) => res.status(400).json({ error }));
 };

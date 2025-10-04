@@ -17,7 +17,7 @@ exports.signup = (req, res, next) => {
     // gestion de l'email double sans mongoose validator car obsolète
     .catch((error) => {
       if (error.code === 11000) {
-        return res.status(400).json({ error: "Cet email est déjà utilisé." });
+        return res.status(400).json({ error: "Cet email est déjà utilisé !" });
       }
       res.status(500).json({ error: error.message });
     });
