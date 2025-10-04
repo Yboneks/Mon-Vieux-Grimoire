@@ -17,5 +17,9 @@
         "react"
     ],
     "rules": {
+        "linebreak-style": "off",
+        "quotes": "off",
+        "import/extensions": "off",
+        "comma-dangle": "off"
     }
 }
