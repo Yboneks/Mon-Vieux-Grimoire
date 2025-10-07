@@ -1,5 +1,3 @@
-const { log } = require("console");
-const { updateBook } = require("../../src/lib/common.js");
 const Book = require("../models/book.js");
 const fs = require("fs");
 
