@@ -2,7 +2,7 @@ const express = require("express");
 const auth = require("../middleware/auth.js");
 const router = express.Router();
 const multer = require("../middleware/multer-config.js");
-const compressImg = require("../middleware/compression-image.js");
+const compressImg = require("../middleware/compressImg.js");
 const bookCtrl = require("../controllers/book.js");
 
 router.get("/", bookCtrl.getAllBook);
